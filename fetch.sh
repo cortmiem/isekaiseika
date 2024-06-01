@@ -9,8 +9,12 @@ html_content=$(curl -s -A "$user_agent" "$url")
 
 hiragana_content=$(echo "$html_content" | xmllint --html --xpath '//*[@class="hiragana"]' - 2>/dev/null)
 
-artist_name=$(echo "$html_content" | grep -oP 'cf_page_artist = "\K[^"]*')
 song_name=$(echo "$html_content" | grep -oP 'cf_page_song = "\K[^"]*')
+artist_name=$(echo "$html_content" | grep -oP 'cf_page_artist = "\K[^"]*')
+
+if [[ -z "$song_name" ]]; then
+  exit 1
+fi
 
 converted_content=$(echo "$hiragana_content" | 
         sed -e 's|<span class="ruby"><span class="rb">|<ruby>|g' \
@@ -25,5 +29,5 @@ converted_content=$(echo "$hiragana_content" |
 
 mkdir -p "./docs/$artist_name"
 echo "$converted_content" > "./docs/$artist_name/$song_name.md"
-
+echo $song_name - $artist_name
 ./update.sh
