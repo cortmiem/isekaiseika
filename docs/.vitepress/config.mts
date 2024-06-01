@@ -19,11 +19,13 @@ export default defineConfig({
         { text: "ジェヘナ", link: '/25時、ナイトコードで。/ジェヘナ' },
         { text: "トリコロージュ", link: '/25時、ナイトコードで。/トリコロージュ' },
         { text: "ノマド", link: '/25時、ナイトコードで。/ノマド' },
+        { text: "ノンブレス・オブリージュ", link: '/25時、ナイトコードで。/ノンブレス・オブリージュ' },
         { text: "ベノム", link: '/25時、ナイトコードで。/ベノム' },
         { text: "ボッカデラベリタ", link: '/25時、ナイトコードで。/ボッカデラベリタ' },
         { text: "メリュー", link: '/25時、ナイトコードで。/メリュー' },
         { text: "再生", link: '/25時、ナイトコードで。/再生' },
         { text: "君の夜をくれ", link: '/25時、ナイトコードで。/君の夜をくれ' },
+        { text: "命に嫌われている", link: '/25時、ナイトコードで。/命に嫌われている' },
         { text: "悔やむと書いてミライ", link: '/25時、ナイトコードで。/悔やむと書いてミライ' },
         { text: "泥中に咲く", link: '/25時、ナイトコードで。/泥中に咲く' },
         { text: "独りんぼエンヴィー", link: '/25時、ナイトコードで。/独りんぼエンヴィー' },
@@ -34,12 +36,6 @@ export default defineConfig({
         { text: "君の望み、君の願い", link: '/CIEL/君の望み、君の願い' },
         { text: "少年漫画", link: '/CIEL/少年漫画' },
         { text: "窓を開けて", link: '/CIEL/窓を開けて' },      ],
-      },
-      { text: 'Giga feat. 可不', collapsed: false, items: [
-        { text: "CH4NGE", link: '/Giga feat. 可不/CH4NGE' },      ],
-      },
-      { text: 'MIMI feat. 初音ミク', collapsed: false, items: [
-        { text: "マシュマリー", link: '/MIMI feat. 初音ミク/マシュマリー' },      ],
       },
       { text: 'MyGO!!!!!', collapsed: false, items: [
         { text: "処救生", link: '/MyGO!!!!!/処救生' },
@@ -54,9 +50,6 @@ export default defineConfig({
         { text: "砂寸奏", link: '/MyGO!!!!!/砂寸奏' },
         { text: "迷星叫", link: '/MyGO!!!!!/迷星叫' },
         { text: "音一会", link: '/MyGO!!!!!/音一会' },      ],
-      },
-      { text: 'R Sound Design feat. 初音ミク', collapsed: false, items: [
-        { text: "帝国少女", link: '/R Sound Design feat. 初音ミク/帝国少女' },      ],
       },
       { text: 'V.W.P', collapsed: false, items: [
         { text: "共鳴", link: '/V.W.P/共鳴' },
@@ -75,30 +68,9 @@ export default defineConfig({
         { text: "遊戯", link: '/V.W.P/遊戯' },
         { text: "魔女(真)", link: '/V.W.P/魔女(真)' },      ],
       },
-      { text: 'くじら', collapsed: false, items: [
-        { text: "ねむるまち feat. yama", link: '/くじら/ねむるまち feat. yama' },      ],
-      },
-      { text: 'ずっと真夜中でいいのに。', collapsed: false, items: [
-        { text: "秒針を噛む", link: '/ずっと真夜中でいいのに。/秒針を噛む' },      ],
-      },
-      { text: 'とあ feat.  MEIKO,25時,ナイトコード', collapsed: false, items: [
-        { text: "アイディスマイル", link: '/とあ feat.  MEIKO,25時,ナイトコード/アイディスマイル' },      ],
-      },
-      { text: 'ぬゆり feat. GUMI', collapsed: false, items: [
-        { text: "フラジール", link: '/ぬゆり feat. GUMI/フラジール' },      ],
-      },
-      { text: 'ウォルピスカーター', collapsed: false, items: [
-        { text: "徒花の涙", link: '/ウォルピスカーター/徒花の涙' },      ],
-      },
-      { text: 'カンザキイオリ', collapsed: false, items: [
-        { text: "命に嫌われている", link: '/カンザキイオリ/命に嫌われている' },      ],
-      },
       { text: 'ガールズバンドクライ', collapsed: false, items: [
         { text: "空の箱", link: '/ガールズバンドクライ/空の箱' },
         { text: "雑踏、僕らの街", link: '/ガールズバンドクライ/雑踏、僕らの街' },      ],
-      },
-      { text: 'ピノキオピー feat. 初音ミク', collapsed: false, items: [
-        { text: "ノンブレス・オブリージュ", link: '/ピノキオピー feat. 初音ミク/ノンブレス・オブリージュ' },      ],
       },
       { text: 'ユルーカ研究所', collapsed: false, items: [
         { text: "魔法のない世界で生きるということ", link: '/ユルーカ研究所/魔法のない世界で生きるということ' },      ],
@@ -169,8 +141,10 @@ export default defineConfig({
         { text: "鳳仙花", link: '/ヰ世界情緒/鳳仙花' },      ],
       },
       { text: '明透', collapsed: false, items: [
+        { text: "CH4NGE", link: '/明透/CH4NGE' },
         { text: "NIGHT DANCER", link: '/明透/NIGHT DANCER' },
         { text: "Overdose", link: '/明透/Overdose' },
+        { text: "ねむるまち feat. yama", link: '/明透/ねむるまち feat. yama' },
         { text: "アンダーブーケ", link: '/明透/アンダーブーケ' },
         { text: "インパーフェクト", link: '/明透/インパーフェクト' },
         { text: "カワキヲアメク", link: '/明透/カワキヲアメク' },
@@ -178,9 +152,14 @@ export default defineConfig({
         { text: "スロウリー", link: '/明透/スロウリー' },
         { text: "ソラゴト", link: '/明透/ソラゴト' },
         { text: "デスペレート feat. LOLUET", link: '/明透/デスペレート feat. LOLUET' },
+        { text: "フラジール", link: '/明透/フラジール' },
+        { text: "マシュマリー", link: '/明透/マシュマリー' },
         { text: "ライトイヤーズ", link: '/明透/ライトイヤーズ' },
         { text: "唱", link: '/明透/唱' },
+        { text: "帝国少女", link: '/明透/帝国少女' },
+        { text: "徒花の涙", link: '/明透/徒花の涙' },
         { text: "新時代 (ウタ from ONE PIECE FILM RED)", link: '/明透/新時代 (ウタ from ONE PIECE FILM RED)' },
+        { text: "秒針を噛む", link: '/明透/秒針を噛む' },
         { text: "第六感", link: '/明透/第六感' },
         { text: "虎視眈々", link: '/明透/虎視眈々' },      ],
       },
