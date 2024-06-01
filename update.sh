@@ -13,7 +13,7 @@ function list_files() {
       if [[ -d "${f}" ]]; then
         local subdir_result
         subdir_result=$(list_files "${f}/" "$prefix  ")
-        result+="${prefix}{ text: '$(basename "${f}")', items: [\n$subdir_result${prefix}],\n${prefix}},\n"
+        result+="${prefix}{ text: '$(basename "${f}")', collapsed: false, items: [\n$subdir_result${prefix}],\n${prefix}},\n"
       elif [[ -f "${f}" ]]; then
         f_dir=$(dirname "${f}" | sed 's/^.\///' | sed 's/^docs\///')
         f_name=$(basename "${f}" .md)

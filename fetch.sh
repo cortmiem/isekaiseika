@@ -1,4 +1,6 @@
 #!/bin/bash
+set -x
+
 url=$1
 
 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
@@ -18,7 +20,10 @@ converted_content=$(echo "$hiragana_content" |
             -e 's/^[ \t]*//;s/[ \t]*$//' \
             -e '1s/.*/<lyric>/' -e '$ a\<\/lyric>' \
             -e '/^$/d' \
-            -e '1i# '"$song_name"'\n---')
+            -e '1i# '"$song_name"'\n---'
+            -e 's/&#13;//g' )
 
-mkdir -p "/mnt/c/Users/Cortmiem/Desktop/isekaiuta/$artist_name"
-echo "$converted_content" > "/mnt/c/Users/Cortmiem/Desktop/isekaiuta/$artist_name/$song_name.md"
+mkdir -p "./docs/$artist_name"
+echo "$converted_content" > "./docs/$artist_name/$song_name.md"
+
+./update.sh
