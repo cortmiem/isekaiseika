@@ -9,7 +9,7 @@ function list_files() {
   result=""
   
   for f in "${dirpath}"*; do
-    if [[ "${f}" != *"public"* ]] && [[ "${f}" != *"/."* ]]; then
+    if [[ "${f}" != *"public"* ]] && [[ "${f}" != *"/."* ]] && [[ "${f}" != "index.md" ]]; then
       if [[ -d "${f}" ]]; then
         local subdir_result
         subdir_result=$(list_files "${f}/" "$prefix  ")
@@ -32,16 +32,13 @@ export default defineConfig({
   themeConfig: {
     logo: '/favicon.ico',
     nav: [
-      { text: 'ヰ世界製菓', link: 'https://z46.icu/' },
+      { text: 'ヰ世界製菓', link: 'https://eustia.ru/' },
     ],
     sidebar: [" > "./.vitepress/config.mts"
 
 list_files "${dir}" "      " >> "./.vitepress/config.mts"
 
 echo "  ],
-    socialLinks: [
-      { icon: 'twitter', link: 'https://github.com/vuejs/vitepress' },
-    ],
     search: {
       provider: 'local',
     },

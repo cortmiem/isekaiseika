@@ -1,0 +1,45 @@
+# Sunflower (feat. 夏背.)
+---
+<lyric>
+<ruby>月<rt>つき</rt></ruby>を<ruby>渡<rt>わた</rt></ruby>って<ruby>行<rt>い</rt></ruby>けば<br/>
+<ruby>花<rt>はな</rt></ruby>に<ruby>足跡<rt>あしあと</rt></ruby>を<ruby>付<rt>つ</rt></ruby>ければ<br/>
+<ruby>振<rt>ふ</rt></ruby>り<ruby>返<rt>かえ</rt></ruby>ってくれるだろう<br/>
+<ruby>振<rt>ふ</rt></ruby>り<ruby>返<rt>かえ</rt></ruby>ってくれるだろうか<br/>
+<br/>
+<br/>
+<ruby>隙間<rt>すきま</rt></ruby>から<ruby>漏<rt>も</rt></ruby>れる<ruby>星明<rt>ほしあ</rt></ruby>かりが<br/>
+ぼんやりと<ruby>貴方<rt>あなた</rt></ruby>の<ruby>顔<rt>かお</rt></ruby>を<ruby>照<rt>て</rt></ruby>らすように<br/>
+この<ruby>気持<rt>きも</rt></ruby>ちの<ruby>輪郭<rt>りんかく</rt></ruby>を<br/>
+<ruby>照<rt>て</rt></ruby>らしてくれたらいいのに<br/>
+<br/>
+<br/>
+<ruby>海<rt>うみ</rt></ruby>の<ruby>揺<rt>ゆ</rt></ruby>らめきと<br/>
+<ruby>地球<rt>ちきゅう</rt></ruby>の<ruby>呼吸<rt>こきゅう</rt></ruby>だけ<br/>
+<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>すのは<ruby>貴方<rt>あなた</rt></ruby>の<br/>
+<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>すのは<ruby>貴方<rt>あなた</rt></ruby>の<br/>
+<br/>
+<br/>
+<ruby>向日葵<rt>ひまわり</rt></ruby>の<ruby>方<rt>ほう</rt></ruby>を<ruby>見<rt>み</rt></ruby>れば<br/>
+<ruby>日陰<rt>ひかげ</rt></ruby>に<ruby>私<rt>わたし</rt></ruby>が<ruby>立<rt>た</rt></ruby>てば<br/>
+<ruby>振<rt>ふ</rt></ruby>り<ruby>返<rt>かえ</rt></ruby>れば<ruby>貴方<rt>あなた</rt></ruby>が でも<br/>
+<ruby>目<rt>め</rt></ruby>が<ruby>合<rt>あ</rt></ruby>わないのは<ruby>何故<rt>なぜ</rt></ruby>か<br/>
+<ruby>突然<rt>とつぜん</rt></ruby>に<ruby>聞<rt>き</rt></ruby>こえたギターの<ruby>音<rt>おと</rt></ruby>が<br/>
+<ruby>合図<rt>あいず</rt></ruby>だったの<br/>
+<ruby>弱<rt>よわ</rt></ruby>かった?<ruby>一人<rt>ひとり</rt></ruby>で<ruby>行<rt>い</rt></ruby>けないと<br/>
+<ruby>言<rt>い</rt></ruby>われて ああ <ruby>気付<rt>きづ</rt></ruby>いたの<br/>
+<br/>
+<br/>
+<ruby>海<rt>うみ</rt></ruby>の<ruby>揺<rt>ゆ</rt></ruby>らめきと<br/>
+<ruby>地球<rt>ちきゅう</rt></ruby>の<ruby>呼吸<rt>こきゅう</rt></ruby>だけ<br/>
+<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>すのは<ruby>貴方<rt>あなた</rt></ruby>の<br/>
+<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>すのは<ruby>貴方<rt>あなた</rt></ruby>の<br/>
+<br/>
+<br/>
+<ruby>涙<rt>なみだ</rt></ruby><ruby>拭<rt>ぬぐ</rt></ruby>う<ruby>風<rt>かぜ</rt></ruby>と<br/>
+<ruby>月<rt>つき</rt></ruby>の<ruby>寝息<rt>ねいき</rt></ruby>だけ<br/>
+<ruby>忘<rt>わす</rt></ruby>れたいのは<ruby>貴方<rt>あなた</rt></ruby>の<br/>
+<ruby>忘<rt>わす</rt></ruby>れたいのは<ruby>貴方<rt>あなた</rt></ruby>の<br/>
+<ruby>海<rt>うみ</rt></ruby>の<ruby>揺<rt>ゆ</rt></ruby>らめきと<br/>
+<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>すのは<ruby>貴方<rt>あなた</rt></ruby>の<br/>
+<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>すのは<ruby>貴方<rt>あなた</rt></ruby>の<br/>
+</lyric>
