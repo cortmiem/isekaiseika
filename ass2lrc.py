@@ -1,170 +1,327 @@
+import os
 import re
 import sys
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QPushButton
-from PySide6.QtGui import QDragEnterEvent, QDropEvent
+from dataclasses import dataclass
+from typing import List, Tuple, Optional
 
-def ass_to_karaoke_format(ass_text):
-    result = []
-    lines = ass_text.strip().split('\n')
 
-    for line in lines:
-        # Skip empty lines
-        if not line.strip():
-            continue
+@dataclass
+class LyricElement:
+    """Represents an element in the lyrics with its timing and type information."""
+    text: str
+    time: str  # Time in LRC format (mm:ss:cc)
+    element_type: int  # 1 for regular kana, 2 for beginning of kanji reading, 10 for line ending
 
-        # Extract the karaoke part
-        karaoke_match = re.search(r'karaoke,(.*?)$', line)
-        if not karaoke_match:
-            continue
 
-        karaoke_content = karaoke_match.group(1)
+def parse_ass_line(line: str) -> Tuple[str, str, str]:
+    """Parse an ASS line to extract start time, end time, and karaoke text.
 
-        # Remove style tags like {\-A}, {\-B}
-        karaoke_content = re.sub(r'{\\-[A-Z]}', '', karaoke_content)
+    Args:
+        line: A line from an ASS file.
 
-        # Extract start time from the line
-        time_match = re.search(r'0:(\d+:\d+\.\d+),', line)
-        if not time_match:
-            continue
+    Returns:
+        Tuple of (start_time, end_time, karaoke_text)
+    """
+    # Regular expression to match ASS dialogue line format
+    pattern = r'^(?:Comment|Dialogue): \d+,(\d+:\d+:\d+\.\d+),(\d+:\d+:\d+\.\d+),[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,karaoke,(.*?)$'
+    match = re.match(pattern, line)
 
-        start_time_str = time_match.group(1)
-        # Convert to seconds for calculations
-        minutes, rest = start_time_str.split(':')
-        seconds, milliseconds = rest.split('.')
-        start_time_seconds = int(minutes) * 60 + int(seconds) + int(milliseconds) / 100
+    if match:
+        start_time, end_time, karaoke_text = match.groups()
+        return start_time, end_time, karaoke_text
+    return None, None, None
 
-        # Current position in seconds
-        current_time = start_time_seconds
 
-        # Process the content
-        output_line = ""
+def convert_ass_time_to_lrc(ass_time: str) -> str:
+    """Convert ASS time format (h:mm:ss.cc) to LRC format (mm:ss:cc).
 
-        # Find all karaoke segments and text
-        segments = re.findall(r'{\\k(\d+)}(.*?)(?=(?:{\\k)|$)', karaoke_content)
+    Args:
+        ass_time: Time in ASS format.
 
-        i = 0
-        while i < len(segments):
-            k_value, text = segments[i]
-            k_seconds = int(k_value) / 100  # Convert k value to seconds
+    Returns:
+        Time in LRC format.
+    """
+    parts = ass_time.split(':')
+    if len(parts) == 3:
+        hours, minutes, seconds = parts
+        seconds_parts = seconds.split('.')
+        if len(seconds_parts) == 2:
+            seconds, centiseconds = seconds_parts
+            # Convert everything to the required format
+            minutes_total = int(hours) * 60 + int(minutes)
+            return f"{minutes_total:02d}:{seconds}:{int(centiseconds):02d}"
+    return "00:00:00"  # Default if parsing fails
 
-            # Process text segments
-            syllable_match = re.search(r'([^|<]+)\|<(.+)', text)
-            if syllable_match:
-                # This is a complex segment with kanji and furigana
-                kanji = syllable_match.group(1)
-                furigana = syllable_match.group(2)
 
-                # Count how many furigana characters
-                furigana_parts = []
-                j = i + 1
-                while j < len(segments) and "#|<" in segments[j][1]:
-                    furigana += segments[j][1].split("#|<")[1]
-                    k_seconds += int(segments[j][0]) / 100
-                    j += 1
+def add_time_duration(time_str: str, duration_10ms: int) -> str:
+    """Add a duration in 10ms units to a time string in LRC format.
 
-                # Format timestamps for kanji with furigana
-                current_time_formatted = format_time(current_time)
+    Args:
+        time_str: Time in LRC format (mm:ss:cc).
+        duration_10ms: Duration in 10ms units.
 
-                # Now collect all the furigana parts with their timestamps
-                furigana_parts = []
-                temp_time = current_time
+    Returns:
+        Updated time in LRC format.
+    """
+    minutes, seconds, centiseconds = time_str.split(':')
 
-                # First part
-                furigana_parts.append(f"[{current_time_formatted}]{furigana[0]}")
-                temp_time += k_seconds / len(furigana)
+    # Convert everything to centiseconds
+    total_centiseconds = (int(minutes) * 60 * 100) + (int(seconds) * 100) + int(centiseconds)
 
-                # Remaining parts
-                for char in furigana[1:]:
-                    temp_time_formatted = format_time(temp_time)
-                    furigana_parts.append(f"[{temp_time_formatted}]{char}")
-                    temp_time += k_seconds / len(furigana)
+    # Add the duration
+    total_centiseconds += duration_10ms
 
-                # Format the output
-                furigana_str = "".join(furigana_parts)
-                output_line += f"{{{kanji}|[{len(furigana)}|{current_time_formatted}]{remove_first_bracketed_content(furigana_str)}}}"
+    # Convert back to mm:ss:cc format
+    new_minutes = total_centiseconds // (60 * 100)
+    total_centiseconds %= (60 * 100)
+    new_seconds = total_centiseconds // 100
+    new_centiseconds = total_centiseconds % 100
 
-                current_time += k_seconds
-                i = j
-            elif text.strip():
-                # This is a simple syllable
-                current_time_formatted = format_time(current_time)
-                output_line += f"[1|{current_time_formatted}]{text}"
-                current_time += k_seconds
-                i += 1
+    return f"{new_minutes:02d}:{new_seconds:02d}:{new_centiseconds:02d}"
+
+
+def parse_karaoke_elements(karaoke_text: str) -> List[dict]:
+    """Parse karaoke text containing k timing tags and special syntax.
+
+    Args:
+        karaoke_text: The karaoke text from an ASS line.
+
+    Returns:
+        List of elements with their properties.
+    """
+    elements = []
+
+    # Remove style tags like {\-A}
+    karaoke_text = re.sub(r'{\\-[^}]*}', '', karaoke_text)
+
+    # Split by k tags
+    k_tag_pattern = r'{\\k(\d+)}([^{]*)'
+    matches = re.findall(k_tag_pattern, karaoke_text)
+
+    current_element = None
+
+    for k_value, text in matches:
+        k_value = int(k_value)
+
+        # Check if it's a kanji|<kana pattern
+        kanji_match = re.match(r'([^|]+)\|<([^#]+)', text)
+        if text.startswith('#|<'):
+            # This is a continuation of kana for the previous kanji
+            kana = text[3:]  # Remove the #|< prefix
+            if current_element and current_element.get('type') == 'kanji_group':
+                current_element['kana'].append({
+                    'text': kana,
+                    'k_value': k_value
+                })
+        elif kanji_match:
+            # This is a kanji with furigana
+            kanji, kana = kanji_match.groups()
+
+            if current_element and current_element.get('type') == 'kanji_group':
+                # Add kana to the current kanji group
+                current_element = {
+                    'type': 'kanji_group',
+                    'kanji': kanji,
+                    'kana': [{
+                        'text': kana,
+                        'k_value': k_value
+                    }]
+                }
+                elements.append(current_element)
             else:
-                # This might be a space or other character
-                output_line += text
-                current_time += k_seconds
-                i += 1
+                # Start a new kanji group
+                current_element = {
+                    'type': 'kanji_group',
+                    'kanji': kanji,
+                    'kana': [{
+                        'text': kana,
+                        'k_value': k_value
+                    }]
+                }
+                elements.append(current_element)
+        else:
+            # Regular text element
+            # Clean up the text
+            if text:
+                elements.append({
+                    'type': 'regular',
+                    'text': text,
+                    'k_value': k_value
+                })
+                current_element = None
 
-        # Add line ending time
-        end_time_formatted = format_time(current_time)
-        output_line += f"[10|{end_time_formatted}]"
-
-        result.append(output_line)
-
-    return "\n".join(result)
-
-
-def remove_first_bracketed_content(s):
-    return re.sub(r'^\[[^]]*]', '', s, count=1)
-
-
-def format_time(seconds):
-    # Convert seconds to MM:SS:mm format
-    minutes = int(seconds // 60)
-    seconds_remainder = seconds % 60
-    whole_seconds = int(seconds_remainder)
-    milliseconds = int((seconds_remainder - whole_seconds) * 100)
-
-    return f"{minutes:02d}:{whole_seconds:02d}:{milliseconds:02d}"
+    return elements
 
 
-class ASSProcessor(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.init_ui()
+def generate_lrc_from_elements(elements: List[dict], start_time: str) -> Tuple[List[LyricElement], str]:
+    """Generate LRC format elements from parsed karaoke elements.
 
-    def init_ui(self):
-        self.setWindowTitle("ASS2LRC by Asuharayuuki")
-        self.setGeometry(100, 100, 600, 400)
+    Args:
+        elements: List of parsed karaoke elements.
+        start_time: Start time in LRC format.
 
-        self.text_edit = QTextEdit(self)
-        self.text_edit.setAcceptDrops(False)  # 让窗口接收拖拽
+    Returns:
+        Tuple of (lrc_elements, end_time)
+    """
+    lrc_elements = []
+    current_time = start_time
 
-        self.process_button = QPushButton("Ciallo～(∠・ω< )⌒☆", self)
-        self.process_button.clicked.connect(self.process_text)
+    for element in elements:
+        if element['type'] == 'kanji_group':
+            # Handle kanji with kana readings
+            kanji = element['kanji']
+            kana_readings = element['kana']
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.text_edit)
-        layout.addWidget(self.process_button)
-        self.setLayout(layout)
+            kana_elements = []
+            for i, kana in enumerate(kana_readings):
+                kana_text = kana['text']
+                k_value = kana['k_value']
 
-        self.setAcceptDrops(True)
+                # For the first kana in a kanji group, use element_type 2
+                element_type = 2 if i == 0 else 0
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
+                kana_elements.append(LyricElement(
+                    text=kana_text,
+                    time=current_time,
+                    element_type=element_type
+                ))
 
-    def dropEvent(self, event: QDropEvent):
-        urls = event.mimeData().urls()
-        if urls:
-            file_path = urls[0].toLocalFile()
-            try:
-                with open(file_path, 'r', encoding='utf-8') as file:
-                    self.text_edit.setPlainText(file.read())
-            except Exception as e:
-                self.text_edit.setPlainText(f"Error: {str(e)}")
+                # Update the time for the next element
+                current_time = add_time_duration(current_time, k_value)
 
-    def process_text(self):
-        input_text = self.text_edit.toPlainText()
-        output_text = ass_to_karaoke_format(input_text)
-        self.text_edit.setPlainText(output_text)
+            # Create the kanji group
+            kanji_group = {
+                'kanji': kanji,
+                'kana_elements': kana_elements
+            }
 
+            lrc_elements.append(kanji_group)
+        else:
+            # Handle regular text elements
+            text = element['text']
+            k_value = element['k_value']
+
+            # Split the text if it contains multiple characters
+            for char in text:
+                if char == ' ':
+                    # Keep space as is
+                    lrc_elements.append(LyricElement(
+                        text=' ',
+                        time=current_time,
+                        element_type=1
+                    ))
+                else:
+                    lrc_elements.append(LyricElement(
+                        text=char,
+                        time=current_time,
+                        element_type=1
+                    ))
+
+                # Update the time for the next element
+                current_time = add_time_duration(current_time, k_value // len(text) if len(text) > 0 else k_value)
+
+    return lrc_elements, current_time
+
+
+def format_lrc_output(lrc_elements: List, end_time: str) -> str:
+    """Format the final LRC output string.
+
+    Args:
+        lrc_elements: List of LRC elements.
+        end_time: End time in LRC format.
+
+    Returns:
+        Formatted LRC string.
+    """
+    output = []
+    i = 0
+
+    while i < len(lrc_elements):
+        element = lrc_elements[i]
+
+        if isinstance(element, dict) and 'kanji' in element:
+            # This is a kanji group
+            kanji = element['kanji']
+            kana_elements = element['kana_elements']
+
+            kana_parts = []
+            for kana in kana_elements:
+                if kana.element_type == 2:
+                    # First kana in the group needs the count and time
+                    kana_count = len(kana_elements)
+                    kana_parts.append(f"[{kana_count}|{kana.time}]{kana.text}")
+                else:
+                    # Other kanas just need the time
+                    kana_parts.append(f"[{kana.time}]{kana.text}")
+
+            output.append(f"{{{kanji}|{''.join(kana_parts)}}}")
+        else:
+            # Regular element
+            output.append(f"[{element.element_type}|{element.time}]{element.text}")
+
+        i += 1
+
+    # Add the end time marker
+    output.append(f"[10|{end_time}]")
+
+    return ''.join(output)
+
+
+def convert_ass_to_lrc(ass_content: str) -> List[str]:
+    """Convert ASS content to LRC format.
+
+    Args:
+        ass_content: The content of an ASS file.
+
+    Returns:
+        List of LRC lines.
+    """
+    lrc_lines = []
+
+    for line in ass_content.strip().split('\n'):
+        start_time, end_time, karaoke_text = parse_ass_line(line)
+
+        if not start_time or not karaoke_text:
+            continue
+
+        # Convert the start time to LRC format
+        lrc_start_time = convert_ass_time_to_lrc(start_time)
+
+        # Parse the karaoke elements
+        karaoke_elements = parse_karaoke_elements(karaoke_text)
+
+        # Generate LRC elements and get the calculated end time
+        lrc_elements, calculated_end_time = generate_lrc_from_elements(karaoke_elements, lrc_start_time)
+
+        # Format the final LRC output
+        lrc_line = format_lrc_output(lrc_elements, calculated_end_time)
+        lrc_lines.append(lrc_line)
+
+    return lrc_lines
+
+
+def main():
+    """Main function to process file input and output."""
+    if len(sys.argv) < 2:
+        sys.exit(1)
+
+    ass_filename = sys.argv[1]
+
+    if not ass_filename.lower().endswith('.ass'):
+        sys.exit(1)
+
+    if not os.path.exists(ass_filename):
+        sys.exit(1)
+
+    with open(ass_filename, 'r', encoding='utf-8') as f:
+        text = f.read()
+
+    lrc_lines = convert_ass_to_lrc(text)
+    lrc_filename = os.path.splitext(ass_filename)[0] + '.lrc'
+
+    with open(lrc_filename, 'w', encoding='utf-8') as f:
+        for item in lrc_lines:
+            f.write(item + '\n')
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    app.setStyle("Fusion")
-    window = ASSProcessor()
-    window.show()
-    sys.exit(app.exec())
+    main()
